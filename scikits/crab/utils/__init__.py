@@ -24,7 +24,7 @@ def check_arrays(*arrays, **options):
         raise ValueError('Unexpected sparse format: %r' % sparse_format)
     copy = options.pop('copy', False)
     if options:
-        raise ValueError("Unexpected kw arguments: %r" % options.keys())
+        raise ValueError("Unexpected kw arguments: %r" % list(options.keys()))
 
     if len(arrays) == 0:
         return None

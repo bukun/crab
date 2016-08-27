@@ -1,10 +1,12 @@
 *.pyc
 *.tmproj
 *.swp
-<<<<<<< HEAD
+
 *~
 .#*
 .DS_Store
-=======
+
 *.pyc
->>>>>>> metrics_pairwise
+.idea
+doc/_build
+*.bak

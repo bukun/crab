@@ -14,9 +14,9 @@ can be subclassed).
 #
 # License: BSD Style.
 
-from base import ItemRecommender, UserRecommender
-from item_strategies import ItemsNeighborhoodStrategy
-from neighborhood_strategies import NearestNeighborsStrategy
+from .base import ItemRecommender, UserRecommender
+from .item_strategies import ItemsNeighborhoodStrategy
+from .neighborhood_strategies import NearestNeighborsStrategy
 import numpy as np
 
 
@@ -135,7 +135,7 @@ class ItemBasedRecommender(ItemRecommender):
                  Desired number of recommendations (default=None ALL)
 
         '''
-        self._set_params(**params)
+        self.set_params(**params)
 
         candidate_items = self.all_other_items(user_id)
 
@@ -597,7 +597,7 @@ class UserBasedRecommender(UserRecommender):
 
         '''
 
-        self._set_params(**params)
+        self.set_params(**params)
 
         candidate_items = self.all_other_items(user_id, **params)
 

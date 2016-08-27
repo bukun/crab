@@ -105,13 +105,13 @@ class MatrixPreferenceDataModel(BaseDataModel):
              Build the data model
         '''
         #Is it important to store as numpy array ?
-        self._user_ids = np.asanyarray(self.dataset.keys())
+        self._user_ids = np.asanyarray(list(self.dataset.keys()))
         self._user_ids.sort()
 
         #Is it important to store as numpy array ?
         self._item_ids = []
-        for items in self.dataset.itervalues():
-            self._item_ids.extend(items.keys())
+        for items in self.dataset.values():
+            self._item_ids.extend(list(items.keys()))
 
         self._item_ids = np.unique(np.array(self._item_ids))
         self._item_ids.sort()
@@ -184,7 +184,7 @@ class MatrixPreferenceDataModel(BaseDataModel):
         preferences = self.preference_values_from_user(user_id)
 
         #think in a way to return as numpy array and how to remove the nan values efficiently.
-        data = zip(self._item_ids, preferences.flatten())
+        data = list(zip(self._item_ids, preferences.flatten()))
 
         if order_by_id:
             return [(item_id, preference)  for item_id, preference in data \
@@ -265,7 +265,7 @@ class MatrixPreferenceDataModel(BaseDataModel):
         preferences = self.index[:, item_id_loc]
 
         #think in a way to return as numpy array and how to remove the nan values efficiently.
-        data = zip(self._user_ids, preferences.flatten())
+        data = list(zip(self._user_ids, preferences.flatten()))
         if order_by_id:
             return [(user_id, preference)  for user_id, preference in data \
                          if not np.isnan(preference)]
@@ -366,12 +366,12 @@ class MatrixPreferenceDataModel(BaseDataModel):
         lines = matrix.split('\n')
         headers = [repr(self)[1:-1]]
         if self._item_ids.size:
-            col_headers = [('%-8s' % unicode(item)[:8]) for item in self._item_ids[:5]]
+            col_headers = [('%-8s' % str(item)[:8]) for item in self._item_ids[:5]]
             headers.append(' ' + ('   '.join(col_headers)))
 
         if self._user_ids.size:
             for (i, line) in enumerate(lines):
-                lines[i] = ('%-8s' % unicode(self._user_ids[i])[:8]) + line
+                lines[i] = ('%-8s' % str(self._user_ids[i])[:8]) + line
             for (i, line) in enumerate(headers):
                 if i > 0:
                     headers[i] = ' ' * 8 + line
@@ -384,7 +384,7 @@ class MatrixPreferenceDataModel(BaseDataModel):
         return '\n'.join(line.rstrip() for line in lines)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
 
 ###############################################################################
@@ -470,10 +470,10 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         or the {user_id:[item_id,item_id2,...],...}
         '''
         if dataset:
-            key = dataset.keys()[0]
+            key = list(dataset.keys())[0]
             if isinstance(dataset[key], dict):
                 for key in dataset:
-                    dataset[key] = dataset[key].keys()
+                    dataset[key] = list(dataset[key].keys())
 
         return dataset
 
@@ -495,11 +495,11 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
              Build the data model
         '''
 
-        self._user_ids = np.asanyarray(self.dataset.keys())
+        self._user_ids = np.asanyarray(list(self.dataset.keys()))
         self._user_ids.sort()
 
         self._item_ids = np.array([])
-        for items in self.dataset.itervalues():
+        for items in self.dataset.values():
             self._item_ids = np.append(self._item_ids, items)
 
         self._item_ids = np.unique(self._item_ids)
@@ -737,12 +737,12 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         lines = matrix.split('\n')
         headers = [repr(self)[1:-1]]
         if self._item_ids.size:
-            col_headers = [('%-8s' % unicode(item)[:8]) for item in self._item_ids[:5]]
+            col_headers = [('%-8s' % str(item)[:8]) for item in self._item_ids[:5]]
             headers.append(' ' + ('   '.join(col_headers)))
 
         if self._user_ids.size:
             for (i, line) in enumerate(lines):
-                lines[i] = ('%-8s' % unicode(self._user_ids[i])[:8]) + line
+                lines[i] = ('%-8s' % str(self._user_ids[i])[:8]) + line
             for (i, line) in enumerate(headers):
                 if i > 0:
                     headers[i] = ' ' * 8 + line
@@ -755,4 +755,4 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         return '\n'.join(line.rstrip() for line in lines)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')

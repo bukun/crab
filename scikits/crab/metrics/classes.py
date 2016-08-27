@@ -11,18 +11,19 @@ This module contains main implementations that encapsulate
 
 import operator
 import numpy as np
-from base import RecommenderEvaluator
-from metrics import root_mean_square_error
-from metrics import mean_absolute_error
-from metrics import normalized_mean_absolute_error
-from metrics import evaluation_error
-from cross_validation import KFold
-from metrics import precision_score
-from metrics import recall_score
-from metrics import f1_score
-from sampling import SplitSampling
+from .base import RecommenderEvaluator
+from .metrics import root_mean_square_error
+from .metrics import mean_absolute_error
+from .metrics import normalized_mean_absolute_error
+from .metrics import evaluation_error
+from .cross_validation import KFold
+from .metrics import precision_score
+from .metrics import recall_score
+from .metrics import f1_score
+from .sampling import SplitSampling
 from scikits.learn.base import clone
 from ..models.utils import ItemNotFoundError, UserNotFoundError
+import numbers
 
 
 #Collaborative Filtering Evaluator
@@ -57,7 +58,7 @@ def check_sampling(sampling, n):
     """
     if sampling is None:
         sampling = 1.0
-    if operator.isNumberType(sampling):
+    if isinstance(sampling, numbers.Number):
         sampling = SplitSampling(n, evaluation_fraction=sampling)
 
     return sampling
@@ -81,7 +82,7 @@ def check_cv(cv, n):
     """
     if cv is None:
         cv = 3
-    if operator.isNumberType(cv):
+    if isinstance(cv, numbers.Number):
         cv = KFold(n, cv, indices=True)
 
     return cv
@@ -214,7 +215,7 @@ class CfEvaluator(RecommenderEvaluator):
 
         if metric not in evaluation_metrics and metric is not None:
             raise ValueError('metric %s is not recognized. valid keywords \
-              are %s' % (metric, evaluation_metrics.keys()))
+              are %s' % (metric, list(evaluation_metrics.keys())))
 
         n_users = recommender.model.users_count()
         sampling_users = check_sampling(sampling_users, n_users)
@@ -253,7 +254,7 @@ class CfEvaluator(RecommenderEvaluator):
         real_preferences = []
         estimated_preferences = []
 
-        for user_id, preferences in testing_set.iteritems():
+        for user_id, preferences in testing_set.items():
             for item_id, preference in preferences:
             #Estimate the preferences
                 try:
@@ -409,7 +410,7 @@ class CfEvaluator(RecommenderEvaluator):
 
         if metric not in evaluation_metrics and metric is not None:
             raise ValueError('metric %s is not recognized. valid keywords \
-              are %s' % (metric, evaluation_metrics.keys()))
+              are %s' % (metric, list(evaluation_metrics.keys())))
 
         permutation_scores_error = []
         permutation_scores_ir = []
@@ -463,7 +464,7 @@ class CfEvaluator(RecommenderEvaluator):
             real_preferences = []
             estimated_preferences = []
 
-            for user_id, preferences in testing_set.iteritems():
+            for user_id, preferences in testing_set.items():
                 for item_id, preference in preferences:
                     #Estimate the preferences
                     try:

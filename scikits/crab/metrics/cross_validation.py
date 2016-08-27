@@ -57,7 +57,7 @@ class LeaveOneOut(object):
 
     def __iter__(self):
         n = self.n
-        for i in xrange(n):
+        for i in range(n):
             test_index = np.zeros(n, dtype=np.bool)
             test_index[i] = True
             train_index = np.logical_not(test_index)
@@ -127,7 +127,7 @@ class LeavePOut(object):
     def __iter__(self):
         n = self.n
         p = self.p
-        comb = combinations(range(n), p)
+        comb = combinations(list(range(n)), p)
         for idx in comb:
             test_index = np.zeros(n, dtype=np.bool)
             test_index[np.array(idx)] = True
@@ -208,7 +208,7 @@ class KFold(object):
         k = self.k
         j = ceil(n / k)
 
-        for i in xrange(k):
+        for i in range(k):
             test_index = np.zeros(n, dtype=np.bool)
             if i < k - 1:
                 test_index[i * j:(i + 1) * j] = True

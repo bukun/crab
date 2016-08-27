@@ -1,4 +1,3 @@
-
 """
 Base IO code for all datasets
 """
@@ -58,26 +57,26 @@ def load_movielens_r100k(load_timestamp=False):
 
     """
     base_dir = join(dirname(__file__), 'data/')
-    #Read data
+    # Read data
     if load_timestamp:
         data_m = np.loadtxt(base_dir + 'movielens100k.data',
-                delimiter='\t', dtype=int)
+                            delimiter='\t', dtype=int)
         data_movies = {}
         for user_id, item_id, rating, timestamp in data_m:
             data_movies.setdefault(user_id, {})
             data_movies[user_id][item_id] = (timestamp, int(rating))
     else:
         data_m = np.loadtxt(base_dir + 'movielens100k.data',
-                delimiter='\t', usecols=(0, 1, 2), dtype=int)
+                            delimiter='\t', usecols=(0, 1, 2), dtype=int)
 
         data_movies = {}
         for user_id, item_id, rating in data_m:
             data_movies.setdefault(user_id, {})
             data_movies[user_id][item_id] = int(rating)
 
-    #Read the titles
+    # Read the titles
     data_titles = np.loadtxt(base_dir + 'movielens100k.item',
-             delimiter='|', usecols=(0, 1), dtype=str)
+                             delimiter='|', usecols=(0, 1), dtype=str)
 
     data_t = []
     for item_id, label in data_titles:
@@ -121,9 +120,14 @@ def load_sample_songs():
     """
     base_dir = join(dirname(__file__), 'data/')
 
-    #Read data
-    data_m = np.loadtxt(base_dir + 'sample_songs.csv',
-                delimiter=',', dtype=str)
+    # Read data
+    # data_m = np.loadtxt(base_dir + 'sample_songs.csv',
+    #                     delimiter=',', dtype=str)
+
+    data_m = np.loadtxt(base_dir + 'sample_movies.csv', delimiter=';',
+                        dtype=[('f0', '|S18'), ('f1', '|S18'), ('f2', float)])
+                        # dtype=[('f0', str), ('f1', str), ('f2', float)])
+
     item_ids = []
     user_ids = []
     data_songs = {}
@@ -135,7 +139,8 @@ def load_sample_songs():
         u_ix = user_ids.index(user_id) + 1
         i_ix = item_ids.index(item_id) + 1
         data_songs.setdefault(u_ix, {})
-        data_songs[u_ix][i_ix] = float(rating)
+        # data_songs[u_ix][i_ix] = float(rating)
+        data_songs[u_ix][i_ix] = rating
 
     data_t = []
     for no, item_id in enumerate(item_ids):
@@ -184,13 +189,22 @@ def load_sample_movies():
     """
     base_dir = join(dirname(__file__), 'data/')
 
-    #Read data
-    data_m = np.loadtxt(base_dir + 'sample_movies.csv',
-                delimiter=';', dtype=str)
+    # Read data
+    # data_m = np.loadtxt(base_dir + 'sample_movies.csv',                delimiter=';', dtype=str)
+
+    data_m = np.loadtxt(base_dir + 'sample_movies.csv', delimiter=';',
+                        dtype=[('f0', '|S18'), ('f1', '|S18'), ('f2', float)])
+                        # dtype=[('f0', str), ('f1', str), ('f2', float)])
+
     item_ids = []
     user_ids = []
     data_songs = {}
     for user_id, item_id, rating in data_m:
+        print(user_id, item_id, rating)
+        print(user_id)
+        # print(item_id)
+        # print(rating)
+        # print(rating.decode('UTF-8'))
         if user_id not in user_ids:
             user_ids.append(user_id)
         if item_id not in item_ids:
@@ -198,7 +212,8 @@ def load_sample_movies():
         u_ix = user_ids.index(user_id) + 1
         i_ix = item_ids.index(item_id) + 1
         data_songs.setdefault(u_ix, {})
-        data_songs[u_ix][i_ix] = float(rating)
+        # data_songs[u_ix][i_ix] = float(rating.astype(np.str))
+        data_songs[u_ix][i_ix] = rating
 
     data_t = []
     for no, item_id in enumerate(item_ids):

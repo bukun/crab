@@ -19,7 +19,7 @@ except AttributeError:
         if r <= 0:
             yield []
         else:
-            for i in xrange(len(seq)):
+            for i in range(len(seq)):
                 for cc in combinations(seq[i + 1:], r - 1):
                     yield [seq[i]] + cc
 

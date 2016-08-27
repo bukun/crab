@@ -34,13 +34,13 @@ May 10-14, 2005, Chiba, Japan.
 # License: Simplified BSD
 
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import zipfile
 from os.path import dirname
 from os.path import join
 import numpy as np
-from base import Bunch
+from .base import Bunch
 import csv
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ def download_book_crossings(target_dir):
 
     if not os.path.exists(archive_path):
         logger.warn("Downloading dataset from %s (77 MB)", URL)
-        opener = urllib.urlopen(URL)
+        opener = urllib.request.urlopen(URL)
         open(archive_path, 'wb').write(opener.read())
 
     logger.info("Decompressing %s", archive_path)
@@ -116,19 +116,19 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
         if not os.path.exists(os.path.join(data_home, 'BX-Book-Ratings.csv')) \
             and not open(os.path.join(data_home, 'BX-Books.csv')):
             raise IOError
-    except Exception, e:
-        print 80 * '_'
-        print 'Loading files failed'
-        print 80 * '_'
-        print e
+    except Exception as e:
+        print(80 * '_')
+        print('Loading files failed')
+        print(80 * '_')
+        print(e)
 
         if download_if_missing:
-            print 'downloading the dataset...'
+            print('downloading the dataset...')
             try:
                 download_book_crossings(data_home)
             except:
                 raise Exception('FAIL: Problems during the download.')
-            print 'dataset downloaded.'
+            print('dataset downloaded.')
         else:
             raise IOError('Book-Crossing dataset not found')
 
@@ -138,7 +138,7 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
 
     ratings_m = csv.reader(open(os.path.join(data_home,
                 'BX-Book-Ratings.csv')), delimiter=';')
-    ratings_m.next()
+    next(ratings_m)
     data_books = {}
     if implicit:
         for user_id, item_id, rating in ratings_m:
