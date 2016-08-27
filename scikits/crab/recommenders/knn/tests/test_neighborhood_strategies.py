@@ -46,16 +46,28 @@ def test_NearestNeighborsStrategy():
     #Possible candidates
     model = MatrixPreferenceDataModel(movies)
     strategy = NearestNeighborsStrategy()
+
+    # Todo: 注释的为原来的
+    # assert_array_equal(np.array(['Leopoldo Pires', 'Marcel Caraciolo', 'Penny Frewman',
+    #  'Sheldom', 'Steve Gates', 'Luciana Nunes'], dtype='|S16'),
+    #    strategy.user_neighborhood('Lorena Abreu', model))
+
     assert_array_equal(np.array(['Leopoldo Pires', 'Marcel Caraciolo', 'Penny Frewman',
-     'Sheldom', 'Steve Gates', 'Luciana Nunes'], dtype='|S16'),
+     'Sheldom', 'Steve Gates', 'Luciana Nunes'], dtype='<U16'),
        strategy.user_neighborhood('Lorena Abreu', model))
 
     #Test with neighborhood size limited.
     model = MatrixPreferenceDataModel(movies)
     strategy = NearestNeighborsStrategy()
+
+    # Todo:
+    # assert_array_equal(np.array(['Leopoldo Pires', 'Marcel Caraciolo'],
+    #         dtype='|S16'), strategy.user_neighborhood(user_id='Lorena Abreu', data_model=model,
+    #             nhood_size=2))
+
     assert_array_equal(np.array(['Leopoldo Pires', 'Marcel Caraciolo'],
-            dtype='|S16'), strategy.user_neighborhood(user_id='Lorena Abreu', data_model=model,
-                nhood_size=2))
+                                dtype='<U16'), strategy.user_neighborhood(user_id='Lorena Abreu', data_model=model,
+                                                                          nhood_size=2))
 
     #Test with minimal_similarity
     model = MatrixPreferenceDataModel(movies)
@@ -67,8 +79,9 @@ def test_NearestNeighborsStrategy():
     #Empty candidates
     model = MatrixPreferenceDataModel(movies)
     strategy = NearestNeighborsStrategy()
+    # Todo: <U14 for |S14
     assert_array_equal(np.array(['Leopoldo Pires', 'Steve Gates', 'Lorena Abreu', 'Penny Frewman',
-    'Sheldom', 'Luciana Nunes'], dtype='|S14'),
+    'Sheldom', 'Luciana Nunes'], dtype='<U14'),
         strategy.user_neighborhood('Marcel Caraciolo', model))
 
     #Empty candidates

@@ -40,7 +40,9 @@ def test_ItemsNeighborhoodStrategy():
     #Empty candidates
     model = MatrixPreferenceDataModel(movies)
     strategy = ItemsNeighborhoodStrategy()
-    assert_array_equal(np.array([], dtype='|S'), strategy.candidate_items('Marcel Caraciolo', model))
+    # Todo: 上面为原来
+    # assert_array_equal(np.array([], dtype='|S'), strategy.candidate_items('Marcel Caraciolo', model))
+    assert_array_equal(np.array([], dtype='<U32'), strategy.candidate_items('Marcel Caraciolo', model))
 
     #Empty candidates
     model = MatrixPreferenceDataModel(movies)
@@ -62,7 +64,9 @@ def test_AllPossibleItemsStrategy():
     #Empty candidates
     model = MatrixPreferenceDataModel(movies)
     strategy = AllPossibleItemsStrategy()
-    assert_array_equal(np.array([], dtype='|S'), strategy.candidate_items('Marcel Caraciolo', model))
+    #Todo: 上面为原来
+    # assert_array_equal(np.array([], dtype='|S'), strategy.candidate_items('Marcel Caraciolo', model))
+    assert_array_equal(np.array([], dtype='<U18'), strategy.candidate_items('Marcel Caraciolo', model))
 
     #Empty candidates
     model = MatrixPreferenceDataModel(movies)

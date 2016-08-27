@@ -9,6 +9,12 @@
 
   For Usage and Instructions checkout the [Crab Wiki](https://github.com/muricoca/crab/wiki)
 
+## Unit test with nose
+
+  Run with the following command:
+
+     nosetests  --exe -v -d -s
+
 ## History
   
   The project was started in 2010  by Marcel Caraciolo as a M.S.C related  project, and since then many people interested joined to help in the project.

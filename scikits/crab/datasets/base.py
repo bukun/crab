@@ -76,11 +76,12 @@ def load_movielens_r100k(load_timestamp=False):
 
     # Read the titles
     data_titles = np.loadtxt(base_dir + 'movielens100k.item',
-                             delimiter='|', usecols=(0, 1), dtype=str)
+                             # delimiter='|', usecols=(0, 1), dtype=str)
+                             delimiter='|', usecols=(0, 1), dtype=[('f0', int), ('f1', '|S18')])
 
     data_t = []
     for item_id, label in data_titles:
-        data_t.append((int(item_id), label))
+        data_t.append((item_id, label))
     data_titles = dict(data_t)
 
     fdescr = open(dirname(__file__) + '/descr/movielens100k.rst')
@@ -121,12 +122,13 @@ def load_sample_songs():
     base_dir = join(dirname(__file__), 'data/')
 
     # Read data
-    # data_m = np.loadtxt(base_dir + 'sample_songs.csv',
-    #                     delimiter=',', dtype=str)
-
-    data_m = np.loadtxt(base_dir + 'sample_movies.csv', delimiter=';',
+    data_m = np.loadtxt(base_dir + 'sample_songs.csv',
+                         delimiter=',',
                         dtype=[('f0', '|S18'), ('f1', '|S18'), ('f2', float)])
-                        # dtype=[('f0', str), ('f1', str), ('f2', float)])
+
+    # data_m = np.loadtxt(base_dir + 'sample_movies.csv', delimiter=';',
+    #                     dtype=[('f0', '|S18'), ('f1', '|S18'), ('f2', float)])
+    #                     # dtype=[('f0', str), ('f1', str), ('f2', float)])
 
     item_ids = []
     user_ids = []

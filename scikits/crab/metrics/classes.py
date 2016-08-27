@@ -21,7 +21,10 @@ from .metrics import precision_score
 from .metrics import recall_score
 from .metrics import f1_score
 from .sampling import SplitSampling
-from scikits.learn.base import clone
+# from scikits.learn.base import clone
+from sklearn.base import clone
+
+
 from ..models.utils import ItemNotFoundError, UserNotFoundError
 import numbers
 

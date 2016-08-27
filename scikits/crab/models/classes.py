@@ -755,4 +755,5 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         return '\n'.join(line.rstrip() for line in lines)
 
     def __str__(self):
+        # return str(self).encode('utf-8')
         return str(self).encode('utf-8')

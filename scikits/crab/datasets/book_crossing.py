@@ -154,7 +154,8 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
 
     #Read the titles
     data_titles = np.loadtxt(os.path.join(data_home, 'BX-Books.csv'),
-             delimiter=';', usecols=(0, 1), dtype=str)
+             # delimiter=';', usecols=(0, 1), dtype=str)
+             delimiter=';', usecols=(0, 1), dtype=[('f0', '|S10'), ('f1', '|S50')])
 
     data_t = []
     for item_id, label in data_titles:
