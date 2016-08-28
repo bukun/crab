@@ -119,14 +119,12 @@ class MatrixPreferenceDataModel(BaseDataModel):
         self.max_pref = -np.inf
         self.min_pref = np.inf
 
-        logger.info("creating matrix for %d users and %d items" % \
-                    (self._user_ids.size, self._item_ids.size))
+        logger.info("creating matrix for %d users and %d items" % (self._user_ids.size, self._item_ids.size))
 
         self.index = np.empty(shape=(self._user_ids.size, self._item_ids.size))
         for userno, user_id in enumerate(self._user_ids):
             if userno % 2 == 0:
-                logger.debug("PROGRESS: at user_id #%i/%i" % \
-                             (userno, self._user_ids.size))
+                logger.debug("PROGRESS: at user_id #%i/%i" % (userno, self._user_ids.size))
             for itemno, item_id in enumerate(self._item_ids):
                 r = self.dataset[user_id].get(item_id, np.NaN)  # Is it to be np.NaN or 0 ?!!
                 self.index[userno, itemno] = r

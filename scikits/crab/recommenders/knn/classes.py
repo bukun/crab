@@ -113,8 +113,7 @@ class ItemBasedRecommender(ItemRecommender):
 
     """
 
-    def __init__(self, model, similarity, items_selection_strategy=None,
-                 capper=True, with_preference=False):
+    def __init__(self, model, similarity, items_selection_strategy=None, capper=True, with_preference=False):
         ItemRecommender.__init__(self, model, with_preference)
         self.similarity = similarity
         self.capper = capper
@@ -137,12 +136,8 @@ class ItemBasedRecommender(ItemRecommender):
 
         '''
         self.set_params(**params)
-
         candidate_items = self.all_other_items(user_id)
-
-        recommendable_items = self._top_matches(user_id, \
-                                                candidate_items, how_many)
-
+        recommendable_items = self._top_matches(user_id, candidate_items, how_many)
         return recommendable_items
 
     def estimate_preference(self, user_id, item_id, **params):
@@ -172,9 +167,8 @@ class ItemBasedRecommender(ItemRecommender):
         if not self.model.has_preference_values():
             prefs = [(pref, 1.0) for pref in prefs]
 
-        similarities = \
-            np.array([self.similarity.get_similarity(item_id, to_item_id) \
-                      for to_item_id, pref in prefs if to_item_id != item_id]).flatten()
+        similarities = np.array([self.similarity.get_similarity(item_id, to_item_id) for to_item_id, pref in prefs if
+                                 to_item_id != item_id]).flatten()
 
         prefs = np.array([pref for it, pref in prefs])
         prefs_sim = np.sum(prefs[~np.isnan(similarities)] *
@@ -190,8 +184,7 @@ class ItemBasedRecommender(ItemRecommender):
         # that happened to have a defined similarity.
         # The similarity score doesn't matter, and that
         # seems like a bad situation.
-        if total_similarity == 0.0 or \
-                not similarities[~np.isnan(similarities)].size:
+        if total_similarity == 0.0 or not similarities[~np.isnan(similarities)].size:
             return np.nan
 
         estimated = prefs_sim / total_similarity
@@ -199,8 +192,7 @@ class ItemBasedRecommender(ItemRecommender):
         if self.capper:
             max_p = self.model.maximum_preference_value()
             min_p = self.model.minimum_preference_value()
-            estimated = max_p if estimated > max_p else min_p \
-                if estimated < min_p else estimated
+            estimated = max_p if estimated > max_p else min_p if estimated < min_p else estimated
         return estimated
 
     def all_other_items(self, user_id, **params):
@@ -278,8 +270,7 @@ class ItemBasedRecommender(ItemRecommender):
         similarities = self.similarity[item_id]
         self.similarity.num_best = old_how_many
 
-        return np.array([item for item, pref in similarities \
-                         if item != item_id and not np.isnan(pref)])
+        return np.array([item for item, pref in similarities if item != item_id and not np.isnan(pref)])
 
     def recommended_because(self, user_id, item_id, how_many=None, **params):
         '''
@@ -321,8 +312,7 @@ class ItemBasedRecommender(ItemRecommender):
             prefs = np.array([1.0 for it in preferences])
             item_ids = np.array(preferences)
 
-        scores = prefs[~np.isnan(similarities)] * \
-                 (1.0 + similarities[~np.isnan(similarities)])
+        scores = prefs[~np.isnan(similarities)] * (1.0 + similarities[~np.isnan(similarities)])
 
         sorted_preferences = np.lexsort((scores,))[::-1]
 
@@ -527,8 +517,7 @@ class UserBasedRecommender(UserRecommender):
         similarities = np.array([self.similarity.get_similarity(user_id, to_user_id)
                                  for to_user_id in nearest_neighbors]).flatten()
 
-        prefs = np.array([self.model.preference_value(to_user_id, item_id)
-                          for to_user_id in nearest_neighbors])
+        prefs = np.array([self.model.preference_value(to_user_id, item_id) for to_user_id in nearest_neighbors])
 
         prefs = prefs[~np.isnan(prefs)]
         similarities = similarities[~np.isnan(prefs)]
@@ -544,8 +533,7 @@ class UserBasedRecommender(UserRecommender):
         # is, simply, the user's rating for one item that happened
         # to have a defined similarity. The similarity score doesn't
         # matter, and that seems like a bad situation.
-        if total_similarity == 0.0 or \
-                not similarities[~np.isnan(similarities)].size:
+        if total_similarity == 0.0 or not similarities[~np.isnan(similarities)].size:
             return np.nan
 
         estimated = prefs_sim / total_similarity
@@ -553,8 +541,7 @@ class UserBasedRecommender(UserRecommender):
         if self.capper:
             max_p = self.model.maximum_preference_value()
             min_p = self.model.minimum_preference_value()
-            estimated = max_p if estimated > max_p else min_p \
-                if estimated < min_p else estimated
+            estimated = max_p if estimated > max_p else min_p if estimated < min_p else estimated
 
         return estimated
 
@@ -573,12 +560,11 @@ class UserBasedRecommender(UserRecommender):
         '''
         old_how_many = self.similarity.num_best
         # +1 since it returns the identity.
-        self.similarity.num_best = how_many + 1 \
-            if how_many is not None else None
+        self.similarity.num_best = how_many + 1 if how_many is not None else None
         similarities = self.similarity[user_id]
         self.similarity.num_best = old_how_many
-        return np.array([to_user_id for to_user_id, pref in similarities \
-                         if user_id != to_user_id and not np.isnan(pref)])
+        return np.array(
+            [to_user_id for to_user_id, pref in similarities if user_id != to_user_id and not np.isnan(pref)])
 
     def recommend(self, user_id, how_many=None, **params):
         '''
@@ -636,8 +622,7 @@ class UserBasedRecommender(UserRecommender):
         if self.with_preference:
             top_n_recs = [(target_ids[ind], preferences[ind]) for ind in sorted_preferences]
         else:
-            top_n_recs = [target_ids[ind]
-                          for ind in sorted_preferences]
+            top_n_recs = [target_ids[ind] for ind in sorted_preferences]
 
         return top_n_recs
 

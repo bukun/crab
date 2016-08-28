@@ -22,7 +22,6 @@ from .metrics import precision_score
 from .metrics import recall_score
 from .metrics import f1_score
 from .sampling import SplitSampling
-# from scikits.learn.base import clone
 from sklearn.base import clone
 
 from ..models.utils import ItemNotFoundError, UserNotFoundError
@@ -159,8 +158,7 @@ class CfEvaluator(RecommenderEvaluator):
         # if the recommender's model has the build_model implemented.
 
         if not recommender.model.has_preference_values():
-            recommender_training.model.dataset = \
-                recommender_training.model._load_dataset(dataset.copy())
+            recommender_training.model.dataset = recommender_training.model._load_dataset(dataset.copy())
         else:
             recommender_training.model.dataset = dataset
 
@@ -236,15 +234,11 @@ class CfEvaluator(RecommenderEvaluator):
 
             preferences = list(preferences)
             if recommender.model.has_preference_values():
-                training_set[user_id] = dict((preferences[idx]
-                                              for idx in train_set)) if preferences else {}
-                testing_set[user_id] = [preferences[idx]
-                                        for idx in test_set] if preferences else []
+                training_set[user_id] = dict((preferences[idx] for idx in train_set)) if preferences else {}
+                testing_set[user_id] = [preferences[idx] for idx in test_set] if preferences else []
             else:
-                training_set[user_id] = dict(((preferences[idx], 1.0)
-                                              for idx in train_set)) if preferences else {}
-                testing_set[user_id] = [(preferences[idx], 1.0)
-                                        for idx in test_set] if preferences else []
+                training_set[user_id] = dict(((preferences[idx], 1.0) for idx in train_set)) if preferences else {}
+                testing_set[user_id] = [(preferences[idx], 1.0) for idx in test_set] if preferences else []
 
         # Evaluate the recommender.
         recommender_training = self._build_recommender(training_set, recommender)
@@ -256,8 +250,7 @@ class CfEvaluator(RecommenderEvaluator):
             for item_id, preference in preferences:
                 # Estimate the preferences
                 try:
-                    estimated = recommender_training.estimate_preference(
-                        user_id, item_id)
+                    estimated = recommender_training.estimate_preference(user_id, item_id)
                     real_preferences.append(preference)
                 except ItemNotFoundError:
                     # It is possible that an item exists in the test data but
@@ -274,8 +267,7 @@ class CfEvaluator(RecommenderEvaluator):
                                               estimated_preferences,
                                               recommender.model.maximum_preference_value(),
                                               recommender.model.minimum_preference_value())}
-            return {metric: eval_function(real_preferences,
-                                          estimated_preferences)}
+            return {metric: eval_function(real_preferences, estimated_preferences)}
 
         # IR_Statistics
         relevant_arrays = []
@@ -295,8 +287,7 @@ class CfEvaluator(RecommenderEvaluator):
                 preferences = [(preference, 1.0) for preference in preferences]
 
             preferences = sorted(preferences, key=lambda x: x[1], reverse=True)
-            relevant_item_ids = [item_id for item_id, preference
-                                 in preferences[:at]]
+            relevant_item_ids = [item_id for item_id, preference in preferences[:at]]
 
             if len(relevant_item_ids) == 0:
                 continue
@@ -306,8 +297,7 @@ class CfEvaluator(RecommenderEvaluator):
                 preferences_other_user = recommender.model.preferences_from_user(other_user_id)
 
                 if not recommender.model.has_preference_values():
-                    preferences_other_user = [(preference, 1.0)
-                                              for preference in preferences_other_user]
+                    preferences_other_user = [(preference, 1.0) for preference in preferences_other_user]
                 if other_user_id == user_id:
                     preferences_other_user = [pref for pref in preferences_other_user if
                                               pref[0] not in relevant_item_ids]
@@ -321,8 +311,7 @@ class CfEvaluator(RecommenderEvaluator):
             recommender_training = self._build_recommender(training_set, recommender)
 
             try:
-                preferences = \
-                    recommender_training.model.preferences_from_user(user_id)
+                preferences = recommender_training.model.preferences_from_user(user_id)
                 preferences = list(preferences)
                 if not preferences:
                     continue
@@ -461,8 +450,7 @@ class CfEvaluator(RecommenderEvaluator):
                 for item_id, preference in preferences:
                     # Estimate the preferences
                     try:
-                        estimated = recommender_training.estimate_preference(
-                            user_id, item_id)
+                        estimated = recommender_training.estimate_preference(user_id, item_id)
                         real_preferences.append(preference)
                     except:
                         # It is possible that an item exists
@@ -483,17 +471,14 @@ class CfEvaluator(RecommenderEvaluator):
                                               recommender.model.maximum_preference_value(),
                                               recommender.model.minimum_preference_value())})
                 else:
-                    permutation_scores_error.append(
-                        {metric: eval_function(real_preferences,
-                                               estimated_preferences)})
+                    permutation_scores_error.append({metric: eval_function(real_preferences, estimated_preferences)})
             elif metric is None:
                 # Return all
                 mae, nmae, rmse = evaluation_error(real_preferences,
                                                    estimated_preferences,
                                                    recommender.model.maximum_preference_value(),
                                                    recommender.model.minimum_preference_value())
-                permutation_scores_error.append({'mae': mae, 'nmae': nmae,
-                                                 'rmse': rmse})
+                permutation_scores_error.append({'mae': mae, 'nmae': nmae, 'rmse': rmse})
 
         # IR_Statistics (Precision, Recall and F1-Score)
         n_users = recommender.model.users_count()
@@ -514,8 +499,7 @@ class CfEvaluator(RecommenderEvaluator):
                     preferences = [(preference, 1.0) for preference in preferences]
 
                 preferences = sorted(preferences, key=lambda x: x[1], reverse=True)
-                relevant_item_ids = [item_id for item_id, preference
-                                     in preferences[:at]]
+                relevant_item_ids = [item_id for item_id, preference in preferences[:at]]
 
                 if len(relevant_item_ids) == 0:
                     continue
@@ -526,8 +510,7 @@ class CfEvaluator(RecommenderEvaluator):
                     preferences_other_user = recommender.model.preferences_from_user(other_user_id)
 
                     if not recommender.model.has_preference_values():
-                        preferences_other_user = [(preference, 1.0)
-                                                  for preference in preferences_other_user]
+                        preferences_other_user = [(preference, 1.0) for preference in preferences_other_user]
                     if other_user_id == user_id:
                         preferences_other_user = [pref for pref in preferences_other_user if
                                                   pref[0] not in relevant_item_ids]
