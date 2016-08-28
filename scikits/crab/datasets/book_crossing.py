@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Caching loader for the Book-Crossing Dataset
 
 The description of the dataset is available on the official website at:
@@ -76,7 +78,7 @@ def download_book_crossings(target_dir):
 
 
 def load_bookcrossings(data_home=None, download_if_missing=True,
-                     implicit=False):
+                       implicit=False):
     """
     Load the filenames of the Book Crossings dataset
 
@@ -113,8 +115,8 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
         data_home = join(dirname(__file__), 'data/')
 
     try:
-        if not os.path.exists(os.path.join(data_home, 'BX-Book-Ratings.csv')) \
-            and not open(os.path.join(data_home, 'BX-Books.csv')):
+        if not os.path.exists(os.path.join(data_home, 'BX-Book-Ratings.csv')) and not open(
+                os.path.join(data_home, 'BX-Books.csv')):
             raise IOError
     except Exception as e:
         print(80 * '_')
@@ -132,12 +134,11 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
         else:
             raise IOError('Book-Crossing dataset not found')
 
-    #TO FIX: it is not working for np.loadtxt
-    #ratings_m = np.loadtxt(os.path.join(data_home, 'BX-Book-Ratings.csv'),
+    # TO FIX: it is not working for np.loadtxt
+    # ratings_m = np.loadtxt(os.path.join(data_home, 'BX-Book-Ratings.csv'),
     #            delimiter=';', skiprows=1)
 
-    ratings_m = csv.reader(open(os.path.join(data_home,
-                'BX-Book-Ratings.csv')), delimiter=';')
+    ratings_m = csv.reader(open(os.path.join(data_home, 'BX-Book-Ratings.csv')), delimiter=';')
     next(ratings_m)
     data_books = {}
     if implicit:
@@ -152,10 +153,10 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
                 data_books.setdefault(user_id, {})
                 data_books[user_id][item_id] = int(rating)
 
-    #Read the titles
+    # Read the titles
     data_titles = np.loadtxt(os.path.join(data_home, 'BX-Books.csv'),
-             # delimiter=';', usecols=(0, 1), dtype=str)
-             delimiter=';', usecols=(0, 1), dtype=[('f0', '|S10'), ('f1', '|S50')])
+                             # delimiter=';', usecols=(0, 1), dtype=str)
+                             delimiter=';', usecols=(0, 1), dtype=[('f0', '|S10'), ('f1', '|S50')])
 
     data_t = []
     for item_id, label in data_titles:
@@ -164,5 +165,4 @@ def load_bookcrossings(data_home=None, download_if_missing=True,
 
     fdescr = open(dirname(__file__) + '/descr/book-crossing.rst')
 
-    return Bunch(data=data_books, item_ids=data_titles,
-                 user_ids=None, DESCR=fdescr.read())
+    return Bunch(data=data_books, item_ids=data_titles, user_ids=None, DESCR=fdescr.read())

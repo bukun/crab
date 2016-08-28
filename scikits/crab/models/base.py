@@ -1,14 +1,15 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 """
 Base Data Models.
 """
+
+
 # Authors: Bruno Melo <bruno@muricoca.com>
 # License: BSD Style
 
 
 class BaseDataModel(object):
-
     def user_ids(self):
         '''
         Returns

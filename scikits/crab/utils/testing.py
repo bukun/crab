@@ -1,4 +1,7 @@
+# -*- coding:utf-8 -*-
+
 """Testing utilities."""
+
 
 # Copyright (c) 2011 Marcel Caraciolo <marcel@muricoca.com>
 # License: Simplified BSD

@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 Generalized Recommender models amd utility classes.
 
@@ -16,12 +17,12 @@ can be subclassed).
 
 from ..base import MemoryBasedRecommender
 
-#===========================
-#Item-based Recommender Interface
+
+# ===========================
+# Item-based Recommender Interface
 
 
 class ItemRecommender(MemoryBasedRecommender):
-
     def most_similar_items(self, item_id, how_many=None):
         '''
         Return the most similar items to the given item, ordered
@@ -61,12 +62,11 @@ class ItemRecommender(MemoryBasedRecommender):
         raise NotImplementedError("ItemRecommender is an abstract class.")
 
 
-#===========================
-#User-based Recommender Interface
+# ===========================
+# User-based Recommender Interface
 
 
 class UserRecommender(MemoryBasedRecommender):
-
     def most_similar_users(self, user_id, how_many=None):
         '''
         Return the most similar users to the given user, ordered
@@ -105,7 +105,8 @@ class UserRecommender(MemoryBasedRecommender):
         '''
         raise NotImplementedError("UserRecommender is an abstract class.")
 
-#===========================
+
+# ===========================
 # Base Item Candidate Strategy
 
 
@@ -130,7 +131,7 @@ class BaseCandidateItemsStrategy(object):
         raise NotImplementedError("BaseCandidateItemsStrategy is an abstract class.")
 
 
-#===========================
+# ===========================
 # Base User Candidates Strategies
 
 class BaseUserNeighborhoodStrategy(object):
@@ -140,7 +141,7 @@ class BaseUserNeighborhoodStrategy(object):
     '''
 
     def user_neighborhood(self, user_id, data_model, n_similarity='user_similarity',
-                distance=None, n_users=None, **params):
+                          distance=None, n_users=None, **params):
         '''
         Computes a neighborhood consisting of the  n users to a given user based on the
         strategy implemented in this method.

@@ -1,8 +1,7 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 """
 Several Basic Data models.
-
 """
 # Authors: Marcel Caraciolo <marcel@muricoca.com>
 # License: BSD Style
@@ -82,6 +81,7 @@ class MatrixPreferenceDataModel(BaseDataModel):
     [('Lady in the Water', 3.0), ('Snakes on a Plane', 4.0), ('Superman Returns', 5.0),
         ('The Night Listener', 3.0), ('You, Me and Dupree', 3.5)]
     '''
+
     def __init__(self, dataset):
         BaseDataModel.__init__(self)
         self.dataset = dataset
@@ -104,11 +104,11 @@ class MatrixPreferenceDataModel(BaseDataModel):
         self:
              Build the data model
         '''
-        #Is it important to store as numpy array ?
+        # Is it important to store as numpy array ?
         self._user_ids = np.asanyarray(list(self.dataset.keys()))
         self._user_ids.sort()
 
-        #Is it important to store as numpy array ?
+        # Is it important to store as numpy array ?
         self._item_ids = []
         for items in self.dataset.values():
             self._item_ids.extend(list(items.keys()))
@@ -125,10 +125,10 @@ class MatrixPreferenceDataModel(BaseDataModel):
         self.index = np.empty(shape=(self._user_ids.size, self._item_ids.size))
         for userno, user_id in enumerate(self._user_ids):
             if userno % 2 == 0:
-                logger.debug("PROGRESS: at user_id #%i/%i" %  \
-                    (userno, self._user_ids.size))
+                logger.debug("PROGRESS: at user_id #%i/%i" % \
+                             (userno, self._user_ids.size))
             for itemno, item_id in enumerate(self._item_ids):
-                r = self.dataset[user_id].get(item_id, np.NaN) #Is it to be np.NaN or 0 ?!!
+                r = self.dataset[user_id].get(item_id, np.NaN)  # Is it to be np.NaN or 0 ?!!
                 self.index[userno, itemno] = r
 
         if self.index.size:
@@ -165,7 +165,7 @@ class MatrixPreferenceDataModel(BaseDataModel):
         '''
         user_id_loc = np.where(self._user_ids == user_id)
         if not user_id_loc[0].size:
-            #user_id not found
+            # user_id not found
             raise UserNotFoundError
 
         preferences = self.index[user_id_loc]
@@ -183,15 +183,14 @@ class MatrixPreferenceDataModel(BaseDataModel):
         '''
         preferences = self.preference_values_from_user(user_id)
 
-        #think in a way to return as numpy array and how to remove the nan values efficiently.
+        # think in a way to return as numpy array and how to remove the nan values efficiently.
         data = list(zip(self._item_ids, preferences.flatten()))
 
         if order_by_id:
-            return [(item_id, preference)  for item_id, preference in data \
-                         if not np.isnan(preference)]
+            return [(item_id, preference) for item_id, preference in data if not np.isnan(preference)]
         else:
-            return sorted([(item_id, preference)  for item_id, preference in data \
-                         if not np.isnan(preference)], key=lambda item: - item[1])
+            return sorted([(item_id, preference) for item_id, preference in data if not np.isnan(preference)],
+                          key=lambda item: - item[1])
 
     def has_preference_values(self):
         '''
@@ -260,18 +259,17 @@ class MatrixPreferenceDataModel(BaseDataModel):
         '''
         item_id_loc = np.where(self._item_ids == item_id)
         if not item_id_loc[0].size:
-            #item_id not found
+            # item_id not found
             raise ItemNotFoundError('Item not found')
         preferences = self.index[:, item_id_loc]
 
-        #think in a way to return as numpy array and how to remove the nan values efficiently.
+        # think in a way to return as numpy array and how to remove the nan values efficiently.
         data = list(zip(self._user_ids, preferences.flatten()))
         if order_by_id:
-            return [(user_id, preference)  for user_id, preference in data \
-                         if not np.isnan(preference)]
+            return [(user_id, preference) for user_id, preference in data if not np.isnan(preference)]
         else:
-            return sorted([(user_id, preference)  for user_id, preference in data \
-                         if not np.isnan(preference)], key=lambda user: - user[1])
+            return sorted([(user_id, preference) for user_id, preference in data if not np.isnan(preference)],
+                          key=lambda user: - user[1])
 
     def preference_value(self, user_id, item_id):
         '''
@@ -302,11 +300,11 @@ class MatrixPreferenceDataModel(BaseDataModel):
         if not user_id_loc[0].size:
             raise UserNotFoundError('user_id in the model not found')
 
-        #ALLOW NEW ITEMS
-        #if not item_id_loc[0].size:
+        # ALLOW NEW ITEMS
+        # if not item_id_loc[0].size:
         #    raise ItemNotFoundError('item_id in the model not found')
 
-        #How not use the dataset in memory ?!
+        # How not use the dataset in memory ?!
         self.dataset[user_id][item_id] = value
         self.build_model()
 
@@ -331,7 +329,7 @@ class MatrixPreferenceDataModel(BaseDataModel):
 
     def __repr__(self):
         return "<MatrixPreferenceDataModel (%d by %d)>" % (self.index.shape[0],
-                        self.index.shape[1])
+                                                           self.index.shape[1])
 
     def _repr_matrix(self, matrix):
         s = ""
@@ -454,6 +452,7 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
            'The Night Listener', 'You, Me and Dupree'],
           dtype='|S18')
     '''
+
     def __init__(self, dataset):
         BaseDataModel.__init__(self)
         self.dataset = self._load_dataset(dataset.copy())
@@ -505,14 +504,12 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         self._item_ids = np.unique(self._item_ids)
         self._item_ids.sort()
 
-        logger.info("creating matrix for %d users and %d items" % \
-                    (self._user_ids.size, self._item_ids.size))
+        logger.info("creating matrix for %d users and %d items" % (self._user_ids.size, self._item_ids.size))
 
         self.index = np.empty(shape=(self._user_ids.size, self._item_ids.size), dtype=bool)
         for userno, user_id in enumerate(self._user_ids):
             if userno % 2 == 0:
-                logger.debug("PROGRESS: at user_id #%i/%i" %  \
-                    (userno, self._user_ids.size))
+                logger.debug("PROGRESS: at user_id #%i/%i" % (userno, self._user_ids.size))
             for itemno, item_id in enumerate(self._item_ids):
                 r = True if item_id in self.dataset[user_id] else False
                 self.index[userno, itemno] = r
@@ -547,7 +544,7 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         '''
         user_id_loc = np.where(self._user_ids == user_id)
         if not user_id_loc[0].size:
-            #user_id not found
+            # user_id not found
             raise UserNotFoundError
 
         preferences = self.index[user_id_loc]
@@ -616,7 +613,7 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         '''
         item_id_loc = np.where(self._item_ids == item_id)
         if not item_id_loc[0].size:
-            #item_id not found
+            # item_id not found
             raise ItemNotFoundError('Item not found')
         preferences = self.index[:, item_id_loc]
 
@@ -653,11 +650,11 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         if not user_id_loc[0].size:
             raise UserNotFoundError('user_id in the model not found')
 
-        #ALLOW NEW ITEMS
-        #if not item_id_loc[0].size:
+        # ALLOW NEW ITEMS
+        # if not item_id_loc[0].size:
         #    raise ItemNotFoundError('item_id in the model not found')
 
-        #How not use the dataset in memory ?!
+        # How not use the dataset in memory ?!
         self.dataset[user_id].append(item_id)
         self.build_model()
 
@@ -701,8 +698,7 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         return 0.0
 
     def __repr__(self):
-        return "<MatrixBooleanPrefDataModel (%d by %d)>" % (self.index.shape[0],
-                        self.index.shape[1])
+        return "<MatrixBooleanPrefDataModel (%d by %d)>" % (self.index.shape[0], self.index.shape[1])
 
     def _repr_matrix(self, matrix):
         s = ""
@@ -755,5 +751,4 @@ class MatrixBooleanPrefDataModel(BaseDataModel):
         return '\n'.join(line.rstrip() for line in lines)
 
     def __str__(self):
-        # return str(self).encode('utf-8')
         return str(self).encode('utf-8')

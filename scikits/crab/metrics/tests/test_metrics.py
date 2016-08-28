@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 from nose.tools import assert_equals, assert_almost_equals
-from ..metrics import root_mean_square_error, mean_absolute_error,\
-                        normalized_mean_absolute_error, precision_recall_fscore, \
-                        precision_score, recall_score, f1_score, evaluation_report,\
-                        evaluation_error
+from ..metrics import root_mean_square_error, mean_absolute_error, \
+    normalized_mean_absolute_error, precision_recall_fscore, \
+    precision_score, recall_score, f1_score, evaluation_report, \
+    evaluation_error
 from numpy.testing import assert_array_almost_equal
 
 
@@ -40,7 +42,7 @@ def test_root_normalized_mean_absolute_error():
     y_real = np.array([3.0, 1.0, 2.0, 1.0, 1.0])
     y_pred = np.array([0.0, 1.0, 0.0, 2.0, 3.0])
     assert_almost_equals(0.4, normalized_mean_absolute_error(y_real, y_pred,
-                max_rating, min_rating))
+                                                             max_rating, min_rating))
 
 
 def test_evaluation_error():

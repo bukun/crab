@@ -1,8 +1,8 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 """Utilities to evaluate pairwise distances or metrics between 2
 sets of points.
-
+计算两个对象（两组点集合）的距离或度量
 """
 
 # Authors: Marcel Caraciolo <marcel@muricoca.com>
@@ -15,6 +15,7 @@ import scipy.spatial.distance as ssd
 
 def euclidean_distances(X, Y, squared=False, inverse=True):
     """
+    基于欧氏距离 相似度=1/（1+欧式距离）
     Considering the rows of X (and Y=X) as vectors, compute the
     distance matrix between each pair of vectors.
 
@@ -72,13 +73,15 @@ def euclidean_distances(X, Y, squared=False, inverse=True):
         return ssd.cdist(X, Y, 'sqeuclidean')
 
     XY = ssd.cdist(X, Y)
-    return  np.divide(1.0, (1.0 + XY)) if inverse else XY
+    return np.divide(1.0, (1.0 + XY)) if inverse else XY
+
 
 euclidian_distances = euclidean_distances  # both spelling for backward compat
 
 
 def pearson_correlation(X, Y):
     """
+    基于皮尔逊相关系数（Pearson correlation） 0.5+0.5*corrcoef()
     Considering the rows of X (and Y=X) as vectors, compute the
     distance matrix between each pair of vectors.
 
@@ -128,6 +131,9 @@ def pearson_correlation(X, Y):
 
 def jaccard_coefficient(X, Y):
     """
+    Jaccard系数主要用于计算符号度量或布尔值度量的个体间的相似度，因为个体的特征属性都是由符号度量或者布尔值标识，
+    因此无法衡量差异具体值的大小，只能获得“是否相同”这个结果，
+    所以Jaccard系数只关心个体间共同具有的特征是否一致这个问题。如果比较X与Y的Jaccard相似系数，只比较xn和yn中相同的个数。[1]
     Considering the rows of X (and Y=X) as vectors, compute the
     distance matrix between each pair of vectors.
 
@@ -169,7 +175,7 @@ def jaccard_coefficient(X, Y):
         X = np.asanyarray(X)
         Y = np.asanyarray(Y)
 
-    #TODO: Check if it is possible to optimize this function
+    # TODO: Check if it is possible to optimize this function
     result = []
     i = 0
     for arrayX in X:
@@ -180,12 +186,13 @@ def jaccard_coefficient(X, Y):
         result[i] = np.array(result[i])
         i += 1
 
-    #XY = np.array([ [np.intersect1d(y,x).size / (float(len(x)) + len(y) - np.intersect1d(y,x).size)]  for y in Y  for x in X]) 
+    # XY = np.array([ [np.intersect1d(y,x).size / (float(len(x)) + len(y) - np.intersect1d(y,x).size)]  for y in Y  for x in X])
     return np.array(result)
 
 
 def manhattan_distances(X, Y):
     """
+    曼哈顿距离也称为城市街区距离(City Block distance)。
     Considering the rows of X (and Y=X) as vectors, compute the
     distance matrix between each pair of vectors.
 
@@ -281,8 +288,8 @@ def sorensen_coefficient(X, Y):
         X = np.asanyarray(X)
         Y = np.asanyarray(Y)
 
-    #TODO: Check if it is possible to optimize this function
-    #XY = np.array([np.intersect1d(x,y).size for y in Y  for x in X])
+    # TODO: Check if it is possible to optimize this function
+    # XY = np.array([np.intersect1d(x,y).size for y in Y  for x in X])
 
     XY = []
     i = 0
@@ -343,7 +350,7 @@ def tanimoto_coefficient(X, Y):
         X = np.asanyarray(X)
         Y = np.asanyarray(Y)
 
-    #TODO: Check if it is possible to optimize this function
+    # TODO: Check if it is possible to optimize this function
     result = []
     i = 0
     for arrayX in X:
@@ -354,13 +361,14 @@ def tanimoto_coefficient(X, Y):
         result[i] = np.array(result[i])
         i += 1
 
-    #XY = np.array([ [np.intersect1d(y,x).size / (float(len(x)) + len(y) - np.intersect1d(y,x).size)]  for y in Y  for x in X]) 
+    # XY = np.array([ [np.intersect1d(y,x).size / (float(len(x)) + len(y) - np.intersect1d(y,x).size)]  for y in Y  for x in X])
 
     return np.array(result)
 
 
 def cosine_distances(X, Y):
     """
+    余弦距离
     Considering the rows of X (and Y=X) as vectors, compute the
     distance matrix between each pair of vectors.
 
@@ -447,8 +455,8 @@ def spearman_coefficient(X, Y):
     if X is Y:
         X = Y = np.asanyarray(X, dtype=[('x', 'S30'), ('y', float)])
     else:
-        X = np.asanyarray(X,  dtype=[('x', 'S30'), ('y', float)])
-        Y = np.asanyarray(Y,  dtype=[('x', 'S30'), ('y', float)])
+        X = np.asanyarray(X, dtype=[('x', 'S30'), ('y', float)])
+        Y = np.asanyarray(Y, dtype=[('x', 'S30'), ('y', float)])
 
     if X.shape[1] != Y.shape[1]:
         raise ValueError("Incompatible dimension for X and Y matrices")
@@ -458,7 +466,7 @@ def spearman_coefficient(X, Y):
 
     result = []
 
-    #TODO: Check if it is possible to optimize this function
+    # TODO: Check if it is possible to optimize this function
     i = 0
     for arrayX in X:
         result.append([])
@@ -520,6 +528,7 @@ def loglikehood_coefficient(n_items, X, Y):
     See http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.5962 and
     http://tdunning.blogspot.com/2008/03/surprise-and-coincidence.html.
     """
+
     # should not need X_norm_squared because if you could precompute that as
     # well as Y, then you should just pre-compute the output and not even
     # call this function.
@@ -559,7 +568,7 @@ def loglikehood_coefficient(n_items, X, Y):
             else:
                 nX = arrayX.size
                 nY = arrayY.size
-                if (nX - XY.size == 0)  or (n_items - nY) == 0:
+                if (nX - XY.size == 0) or (n_items - nY) == 0:
                     result[i].append(1.0)
                 else:
                     logLikelihood = twoLogLambda(float(XY.size),

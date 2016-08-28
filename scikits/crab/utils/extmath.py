@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 """
 Extended math utilities.
 """
@@ -7,6 +9,7 @@ import math
 
 try:
     import itertools
+
     combinations = itertools.combinations
 except AttributeError:
     def combinations(seq, r=None):

@@ -1,11 +1,11 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 """
 This module contains functions and classes for computing similarities across
 a collection of vectors.
 """
-#Authors: Marcel Caraciolo <marcel@muricoca.com>
-#License: BSD Style
+# Authors: Marcel Caraciolo <marcel@muricoca.com>
+# License: BSD Style
 
 
 import numpy as np
@@ -21,11 +21,12 @@ def find_common_elements(source_preferences, target_preferences):
     inter = np.intersect1d(list(src.keys()), list(tgt.keys()))
 
     common_preferences = list(zip(*[(src[item], tgt[item]) for item in inter \
-            if not np.isnan(src[item]) and not np.isnan(tgt[item])]))
+                                    if not np.isnan(src[item]) and not np.isnan(tgt[item])]))
     if common_preferences:
         return np.asarray([common_preferences[0]]), np.asarray([common_preferences[1]])
     else:
-            return np.asarray([[]]), np.asarray([[]])
+        return np.asarray([[]]), np.asarray([[]])
+
 
 ###############################################################################
 # User Similarity
@@ -101,8 +102,7 @@ class UserSimilarity(BaseSimilarity):
         target_preferences = self.model.preferences_from_user(target_id)
 
         if self.model.has_preference_values():
-            source_preferences, target_preferences = \
-                find_common_elements(source_preferences, target_preferences)
+            source_preferences, target_preferences = find_common_elements(source_preferences, target_preferences)
 
         if source_preferences.ndim == 1 and target_preferences.ndim == 1:
             source_preferences = np.asarray([source_preferences])
@@ -110,17 +110,17 @@ class UserSimilarity(BaseSimilarity):
 
         if self.distance == loglikehood_coefficient:
             return self.distance(self.model.items_count(), \
-                source_preferences, target_preferences) \
+                                 source_preferences, target_preferences) \
                 if not source_preferences.shape[1] == 0 and \
-                not target_preferences.shape[1] == 0 else np.array([[np.nan]])
+                   not target_preferences.shape[1] == 0 else np.array([[np.nan]])
 
-        #evaluate the similarity between the two users vectors.
+        # evaluate the similarity between the two users vectors.
         return self.distance(source_preferences, target_preferences) \
             if not source_preferences.shape[1] == 0 \
-                and not target_preferences.shape[1] == 0 else np.array([[np.nan]])
+               and not target_preferences.shape[1] == 0 else np.array([[np.nan]])
 
     def get_similarities(self, source_id):
-        return[(other_id, self.get_similarity(source_id, other_id))  for other_id, v in self.model]
+        return [(other_id, self.get_similarity(source_id, other_id)) for other_id, v in self.model]
 
     def __iter__(self):
         """
@@ -128,6 +128,7 @@ class UserSimilarity(BaseSimilarity):
         """
         for source_id, preferences in self.model:
             yield source_id, self[source_id]
+
 
 ###############################################################################
 # Item Similarity
@@ -205,23 +206,20 @@ class ItemSimilarity(BaseSimilarity):
         target_preferences = self.model.preferences_for_item(target_id)
 
         if self.model.has_preference_values():
-            source_preferences, target_preferences = \
-                find_common_elements(source_preferences, target_preferences)
+            source_preferences, target_preferences = find_common_elements(source_preferences, target_preferences)
 
         if source_preferences.ndim == 1 and target_preferences.ndim == 1:
             source_preferences = np.asarray([source_preferences])
             target_preferences = np.asarray([target_preferences])
 
         if self.distance == loglikehood_coefficient:
-            return self.distance(self.model.items_count(), \
-                source_preferences, target_preferences) \
+            return self.distance(self.model.items_count(), source_preferences, target_preferences) \
                 if not source_preferences.shape[1] == 0 and \
-                    not target_preferences.shape[1] == 0 else np.array([[np.nan]])
+                   not target_preferences.shape[1] == 0 else np.array([[np.nan]])
 
-        #Evaluate the similarity between the two users vectors.
+        # Evaluate the similarity between the two users vectors.
         return self.distance(source_preferences, target_preferences) \
-            if not source_preferences.shape[1] == 0 and \
-                not target_preferences.shape[1] == 0 else np.array([[np.nan]])
+            if not source_preferences.shape[1] == 0 and not target_preferences.shape[1] == 0 else np.array([[np.nan]])
 
     def get_similarities(self, source_id):
         return [(other_id, self.get_similarity(source_id, other_id)) for other_id in self.model.item_ids()]

@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 """
 Generalized Recommender models amd utility classes.
 

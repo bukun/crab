@@ -1,6 +1,8 @@
 #-*- coding:utf-8 -*-
 
-"""Utilities to evaluate the predictive performance of the recommenders
+"""
+Utilities to evaluate the predictive performance of the recommenders
+抽象类
 """
 
 # Authors: Marcel Caraciolo <marcel@muricoca.com>

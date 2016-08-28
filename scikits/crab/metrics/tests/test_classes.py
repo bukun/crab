@@ -1,32 +1,32 @@
+# -*- coding: utf-8 -*-
+
 from nose.tools import assert_equals, assert_almost_equals, assert_raises, assert_true
 from ...similarities.basic_similarities import UserSimilarity
-from ...metrics.pairwise import  euclidean_distances, jaccard_coefficient
-from ...models.classes import  MatrixPreferenceDataModel, \
-     MatrixBooleanPrefDataModel
-from ...recommenders.knn import  UserBasedRecommender
+from ...metrics.pairwise import euclidean_distances, jaccard_coefficient
+from ...models.classes import MatrixPreferenceDataModel, MatrixBooleanPrefDataModel
+from ...recommenders.knn import UserBasedRecommender
 from ..classes import CfEvaluator
-from ...recommenders.knn.neighborhood_strategies import  NearestNeighborsStrategy
-
+from ...recommenders.knn.neighborhood_strategies import NearestNeighborsStrategy
 
 movies = {'Marcel Caraciolo': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.5,
-     'Just My Luck': 3.0, 'Superman Returns': 3.5, 'You, Me and Dupree': 2.5,
-     'The Night Listener': 3.0},
-    'Luciana Nunes': {'Lady in the Water': 3.0, 'Snakes on a Plane': 3.5,
-     'Just My Luck': 1.5, 'Superman Returns': 5.0, 'The Night Listener': 3.0,
-     'You, Me and Dupree': 3.5},
-    'Leopoldo Pires': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.0,
-     'Superman Returns': 3.5, 'The Night Listener': 4.0},
-    'Lorena Abreu': {'Snakes on a Plane': 3.5, 'Just My Luck': 3.0,
-     'The Night Listener': 4.5, 'Superman Returns': 4.0,
-     'You, Me and Dupree': 2.5},
-    'Steve Gates': {'Lady in the Water': 3.0, 'Snakes on a Plane': 4.0,
-     'Just My Luck': 2.0, 'Superman Returns': 3.0, 'The Night Listener': 3.0,
-     'You, Me and Dupree': 2.0},
-    'Sheldom': {'Lady in the Water': 3.0, 'Snakes on a Plane': 4.0,
-     'The Night Listener': 3.0, 'Superman Returns': 5.0, 'You, Me and Dupree': 3.5},
-    'Penny Frewman': {'Snakes on a Plane': 4.5, 'You, Me and Dupree': 1.0,
-      'Superman Returns': 4.0},
-    'Maria Gabriela': {}}
+                               'Just My Luck': 3.0, 'Superman Returns': 3.5, 'You, Me and Dupree': 2.5,
+                               'The Night Listener': 3.0},
+          'Luciana Nunes': {'Lady in the Water': 3.0, 'Snakes on a Plane': 3.5,
+                            'Just My Luck': 1.5, 'Superman Returns': 5.0, 'The Night Listener': 3.0,
+                            'You, Me and Dupree': 3.5},
+          'Leopoldo Pires': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.0,
+                             'Superman Returns': 3.5, 'The Night Listener': 4.0},
+          'Lorena Abreu': {'Snakes on a Plane': 3.5, 'Just My Luck': 3.0,
+                           'The Night Listener': 4.5, 'Superman Returns': 4.0,
+                           'You, Me and Dupree': 2.5},
+          'Steve Gates': {'Lady in the Water': 3.0, 'Snakes on a Plane': 4.0,
+                          'Just My Luck': 2.0, 'Superman Returns': 3.0, 'The Night Listener': 3.0,
+                          'You, Me and Dupree': 2.0},
+          'Sheldom': {'Lady in the Water': 3.0, 'Snakes on a Plane': 4.0,
+                      'The Night Listener': 3.0, 'Superman Returns': 5.0, 'You, Me and Dupree': 3.5},
+          'Penny Frewman': {'Snakes on a Plane': 4.5, 'You, Me and Dupree': 1.0,
+                            'Superman Returns': 4.0},
+          'Maria Gabriela': {}}
 
 model = MatrixPreferenceDataModel(movies)
 boolean_model = MatrixBooleanPrefDataModel(movies)
@@ -41,10 +41,10 @@ def test_root_CfEvaluator_evaluate():
     """Check evaluate method in CfEvaluator """
     evaluator = CfEvaluator()
 
-    #Test with invalid metric
+    # Test with invalid metric
     assert_raises(ValueError, evaluator.evaluate, recsys, 'rank')
 
-    #Test with specified metric
+    # Test with specified metric
     rmse = evaluator.evaluate(recsys, 'rmse', permutation=False)
     assert_true(rmse['rmse'] >= 0.0 and rmse['rmse'] <= 1.0)
 
@@ -55,7 +55,7 @@ def test_root_CfEvaluator_evaluate():
     assert_true(nmae['nmae'] >= 0.0 and nmae['nmae'] <= 1.0)
 
     precision = evaluator.evaluate(recsys, 'precision',
-                                permutation=False)
+                                   permutation=False)
     assert_true(precision['precision'] >= 0.0 and precision['precision'] <= 1.0)
 
     recall = evaluator.evaluate(recsys, 'recall', permutation=False)
@@ -72,15 +72,15 @@ def test_root_CfEvaluator_evaluate():
     assert_true(all_scores['mae'] >= 0.0 and all_scores['mae'] <= 1.0)
     assert_true(all_scores['rmse'] >= 0.0 and all_scores['rmse'] <= 1.0)
 
-    #With values at sampling.
+    # With values at sampling.
     nmae = evaluator.evaluate(recsys, 'nmae', permutation=False,
-                    sampling_users=0.6, sampling_ratings=0.6)
+                              sampling_users=0.6, sampling_ratings=0.6)
     assert_true(nmae['nmae'] >= 0.0 and nmae['nmae'] <= 1.0)
 
-    #Test with boolean recsys
+    # Test with boolean recsys
     assert_raises(ValueError, evaluator.evaluate, boolean_recsys, 'rank')
 
-    #Test with specified metric
+    # Test with specified metric
     rmse = evaluator.evaluate(boolean_recsys, 'rmse', permutation=False)
     assert_true(rmse['rmse'] >= 0.0 and rmse['rmse'] <= 1.0)
 
@@ -91,7 +91,7 @@ def test_root_CfEvaluator_evaluate():
     assert_true(nmae['nmae'] >= 0.0 and nmae['nmae'] <= 1.0)
 
     precision = evaluator.evaluate(boolean_recsys, 'precision',
-                                permutation=False)
+                                   permutation=False)
     assert_true(precision['precision'] >= 0.0 and precision['precision'] <= 1.0)
 
     recall = evaluator.evaluate(boolean_recsys, 'recall', permutation=False)
@@ -108,9 +108,9 @@ def test_root_CfEvaluator_evaluate():
     assert_true(all_scores['mae'] >= 0.0 and all_scores['mae'] <= 1.0)
     assert_true(all_scores['rmse'] >= 0.0 and all_scores['rmse'] <= 1.0)
 
-    #With values at sampling.
+    # With values at sampling.
     nmae = evaluator.evaluate(boolean_recsys, 'nmae', permutation=False,
-                    sampling_users=0.6, sampling_ratings=0.6)
+                              sampling_users=0.6, sampling_ratings=0.6)
     assert_true(nmae['nmae'] >= 0.0 and nmae['nmae'] <= 1.0)
 
 
@@ -118,10 +118,10 @@ def test_root_CfEvaluator_evaluate_on_split():
     """Check evaluate_on_split method in CfEvaluator """
     evaluator = CfEvaluator()
 
-    #Test with invalid metric
+    # Test with invalid metric
     assert_raises(ValueError, evaluator.evaluate_on_split, recsys, 'rank')
 
-    #Test with specified metric
+    # Test with specified metric
     rmse = evaluator.evaluate_on_split(recsys, 'rmse', permutation=False)
     for p in rmse[0]['error']:
         assert_true(p['rmse'] >= 0.0 and p['rmse'] <= 1.0)
@@ -140,7 +140,7 @@ def test_root_CfEvaluator_evaluate_on_split():
     assert_true(nmae[1]['final_error']['avg']['nmae'] >= 0.0 and
                 nmae[1]['final_error']['stdev']['nmae'] <= 1.0)
 
-    #Test with IR statistics
+    # Test with IR statistics
     precision = evaluator.evaluate_on_split(recsys, 'precision', permutation=False)
     for p in precision[0]['ir']:
         assert_true(p['precision'] >= 0.0 and p['precision'] <= 1.0)
@@ -181,11 +181,11 @@ def test_root_CfEvaluator_evaluate_on_split():
     assert_true(all_scores[1]['final_error']['avg']['nmae'] >= 0.0 and
                 all_scores[1]['final_error']['stdev']['nmae'] <= 1.0)
 
-    #Test with boolean model
-    #Test with invalid metric
+    # Test with boolean model
+    # Test with invalid metric
     assert_raises(ValueError, evaluator.evaluate_on_split, boolean_recsys, 'rank')
 
-    #Test with specified metric
+    # Test with specified metric
     rmse = evaluator.evaluate_on_split(boolean_recsys, 'rmse', permutation=False)
     for p in rmse[0]['error']:
         assert_true(p['rmse'] >= 0.0 and p['rmse'] <= 1.0)
@@ -204,7 +204,7 @@ def test_root_CfEvaluator_evaluate_on_split():
     assert_true(nmae[1]['final_error']['avg']['nmae'] >= 0.0 and
                 nmae[1]['final_error']['stdev']['nmae'] <= 1.0)
 
-    #Test with IR statistics
+    # Test with IR statistics
     precision = evaluator.evaluate_on_split(boolean_recsys, 'precision', permutation=False)
     for p in precision[0]['ir']:
         assert_true(p['precision'] >= 0.0 and p['precision'] <= 1.0)

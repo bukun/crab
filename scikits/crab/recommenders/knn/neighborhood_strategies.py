@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 """
 Strategies for users selection to be a
 possible candidate to be member of a user neighborhood.
@@ -91,8 +93,7 @@ class NearestNeighborsStrategy(BaseUserNeighborhoodStrategy):
         return data_model
 
     def _set_similarity(self, data_model, similarity, distance, nhood_size):
-        if not isinstance(self.similarity, UserSimilarity) \
-             or not distance == self.similarity.distance:
+        if not isinstance(self.similarity, UserSimilarity) or not distance == self.similarity.distance:
             nhood_size = nhood_size if not nhood_size else nhood_size + 1
             self.similarity = UserSimilarity(data_model, distance, nhood_size)
 

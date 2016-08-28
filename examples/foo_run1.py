@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from scikits.crab import datasets
 from scikits.crab.recommenders.knn import UserBasedRecommender
 

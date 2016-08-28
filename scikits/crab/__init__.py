@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 """
 Crab
 Recommendation System module in python
@@ -25,8 +27,7 @@ try:
         """
         Subclass numpy's NoseTester to add doctests by default
         """
-        def test(self, label='fast', verbose=1, extra_argv=['--exe'],
-                        doctests=True, coverage=False):
+        def test(self, label='fast', verbose=1, extra_argv=['--exe'], doctests=True, coverage=False):
             return super(NoseTester, self).test(label=label, verbose=verbose,
                                     extra_argv=extra_argv,
                                     doctests=doctests, coverage=coverage)

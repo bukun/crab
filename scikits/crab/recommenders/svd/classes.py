@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 """
 Generalized Recommender models.
 
@@ -153,8 +155,8 @@ class MatrixFactorBasedRecommender(SVDRecommender):
     """
 
     def __init__(self, model, items_selection_strategy=None,
-            n_features=10, learning_rate=0.01, regularization=0.02, init_mean=0.1,
-            init_stdev=0.1, n_interations=30, capper=True, with_preference=False):
+                 n_features=10, learning_rate=0.01, regularization=0.02, init_mean=0.1,
+                 init_stdev=0.1, n_interations=30, capper=True, with_preference=False):
         SVDRecommender.__init__(self, model, with_preference)
         self.capper = capper
         self.n_features = n_features
@@ -179,10 +181,10 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         num_items = self.model.items_count()
 
         self.user_factors = np.empty(shape=(num_users, self.n_features),
-                    dtype=float)
+                                     dtype=float)
 
         self.item_factors = np.empty(shape=(num_items, self.n_features),
-                    dtype=float)
+                                     dtype=float)
 
         '''
         pref_interval = self.model.max_preference() - self.model.min_preference()
@@ -197,7 +199,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
             for item_idx in self.model.num_items():
                 self.item_factors[item_idx, i] = default_value + (random.random() - 0.5) * interval * 0.2
         '''
-        #Initialize the matrix with normal distributed (Gaussian) Noise
+        # Initialize the matrix with normal distributed (Gaussian) Noise
         self.user_factors = self.init_mean * np.random.randn(num_users, self.n_features) + self.init_stdev ** 2
         self.item_factors = self.init_mean * np.random.randn(num_items, self.n_features) + self.init_stdev ** 2
 
@@ -209,7 +211,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         return np.mean(mdat)
 
     def _predict(self, user_index, item_index, trailing=True):
-        #Compute the scalar product between two rows of two matrices
+        # Compute the scalar product between two rows of two matrices
         result = self._global_bias + np.sum(self.user_factors[user_index] *
                                             self.item_factors[item_index])
         if trailing:
@@ -232,14 +234,14 @@ class MatrixFactorBasedRecommender(SVDRecommender):
             err = self.model.index[user_idx, item_idx] - p
             err_total += (err ** 2.0)
 
-            #Adjust the factors
+            # Adjust the factors
             u_f = self.user_factors[user_idx]
             i_f = self.item_factors[item_idx]
 
-            #Compute factor updates
+            # Compute factor updates
             delta_u = err * i_f - self.regularization * u_f
             delta_i = err * u_f - self.regularization * i_f
-            #if necessary apply updates
+            # if necessary apply updates
             if update_user:
                 self.user_factors[user_idx] += self.learning_rate * delta_u
             if update_item:
@@ -250,8 +252,8 @@ class MatrixFactorBasedRecommender(SVDRecommender):
     def _rating_indices(self):
         if hasattr(self.model, 'index'):
             rating_indices = [(idx, jdx) for idx in range(self.model.users_count())
-                                for jdx in range(self.model.items_count())
-                        if not np.isnan(self.model.index[idx, jdx])]
+                              for jdx in range(self.model.items_count())
+                              if not np.isnan(self.model.index[idx, jdx])]
         else:
             raise TypeError('This model is not yet supported for this recommender.')
 
@@ -264,13 +266,12 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         for index in range(self.n_interations):
             err = self._train(rating_indices, update_user, update_item)
             rmse = sqrt(err / len(rating_indices))
-            logger.debug("Finished the interation %i with RMSE %f" %  \
-                    (index, rmse))
+            logger.debug("Finished the interation %i with RMSE %f" % (index, rmse))
 
     def factorize(self):
-        #init factor matrices
+        # init factor matrices
         self._init_models()
-        #Learn the model parameters
+        # Learn the model parameters
         self.learn_factors()
 
     def recommend(self, user_id, how_many=None, **params):
@@ -290,8 +291,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
 
         candidate_items = self.all_other_items(user_id)
 
-        recommendable_items = self._top_matches(user_id, \
-                 candidate_items, how_many)
+        recommendable_items = self._top_matches(user_id, candidate_items, how_many)
 
         return recommendable_items
 
@@ -318,7 +318,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         if not np.isnan(preference):
             return preference
 
-        #How to catch the user_id and item_id from the matrix.
+        # How to catch the user_id and item_id from the matrix.
 
         user_features = self.user_factors[np.where(self.model.user_ids() == user_id)]
         item_features = self.item_factors[np.where(self.model.item_ids() == item_id)]
@@ -329,7 +329,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
             max_p = self.model.maximum_preference_value()
             min_p = self.model.minimum_preference_value()
             estimated = max_p if estimated > max_p else min_p \
-                     if estimated < min_p else estimated
+                if estimated < min_p else estimated
         return estimated
 
     def all_other_items(self, user_id, **params):
@@ -345,8 +345,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         the preference and could possibly be recommended to the user.
 
         '''
-        return self.items_selection_strategy.candidate_items(user_id, \
-                            self.model)
+        return self.items_selection_strategy.candidate_items(user_id, self.model)
 
     def _top_matches(self, source_id, target_ids, how_many=None, **params):
         '''
@@ -365,7 +364,7 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         Return the top N matches
         It can be user_ids or item_ids.
         '''
-        #Empty target_ids
+        # Empty target_ids
         if target_ids.size == 0:
             return np.array([])
 
@@ -379,14 +378,12 @@ class MatrixFactorBasedRecommender(SVDRecommender):
         sorted_preferences = np.lexsort((preferences,))[::-1]
 
         sorted_preferences = sorted_preferences[0:how_many] \
-             if how_many and sorted_preferences.size > how_many \
-                else sorted_preferences
+            if how_many and sorted_preferences.size > how_many \
+            else sorted_preferences
 
         if self.with_preference:
-            top_n_recs = [(target_ids[ind], \
-                     preferences[ind]) for ind in sorted_preferences]
+            top_n_recs = [(target_ids[ind], preferences[ind]) for ind in sorted_preferences]
         else:
-            top_n_recs = [target_ids[ind]
-                 for ind in sorted_preferences]
+            top_n_recs = [target_ids[ind] for ind in sorted_preferences]
 
         return top_n_recs

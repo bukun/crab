@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 """Utilities for sampling techniques"""
 
 # Author: Marcel Caraciolo <marcel@muricoca.com>
@@ -29,15 +31,14 @@ class SplitSampling(object):
         Pseudo-random number generator state used for random sampling.
 
     """
-    def __init__(self, n, evaluation_fraction=0.7, indices=False,
-            random_state=None):
+
+    def __init__(self, n, evaluation_fraction=0.7, indices=False, random_state=None):
         self.n = n
         self.evaluation_fraction = evaluation_fraction
         self.random_state = random_state
         self.indices = indices
 
-    def split(self, evaluation_fraction=None, indices=False,
-             random_state=None, permutation=True):
+    def split(self, evaluation_fraction=None, indices=False, random_state=None, permutation=True):
         """
         Random Split Sampling the dataset into two sets.
 
@@ -69,9 +70,8 @@ class SplitSampling(object):
 
         rng = self.random_state = check_random_state(self.random_state)
         n_train = ceil(self.evaluation_fraction * self.n)
-        #random partition
-        permutation = rng.permutation(self.n) if permutation \
-                             else np.arange(self.n)
+        # random partition
+        permutation = rng.permutation(self.n) if permutation else np.arange(self.n)
         ind_train = permutation[-n_train:]
         ind_ignore = permutation[:-n_train]
         if self.indices:
@@ -84,11 +84,5 @@ class SplitSampling(object):
             return train_mask, test_mask
 
     def __repr__(self):
-        return ('%s(%d, evaluation_fraction=%s, indices=%s, '
-                'random_state=%d)' % (
-                    self.__class__.__name__,
-                    self.n,
-                    str(self.evaluation_fraction),
-                    self.indices,
-                    self.random_state,
-                ))
+        return ('%s(%d, evaluation_fraction=%s, indices=%s, '                'random_state=%d)' % (
+            self.__class__.__name__, self.n, str(self.evaluation_fraction), self.indices, self.random_state,))

@@ -1,9 +1,10 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 """
 This module contains basic implementations that encapsulate
     retrieval-related statistics about the quality of the recommender's
     recommendations.
+一些基本的实现，来评价推荐系统推荐的值的质量
 """
 
 # Authors: Marcel Caraciolo <marcel@muricoca.com>
@@ -29,12 +30,9 @@ def root_mean_square_error(y_real, y_pred):
     -------
 
     Positive floating point value: the best value is 0.0.
-
     return the mean square error
-
     """
     y_real, y_pred = check_arrays(y_real, y_pred)
-
     return np.sqrt((np.sum((y_pred - y_real) ** 2)) / y_real.shape[0])
 
 
@@ -46,20 +44,13 @@ def mean_absolute_error(y_real, y_pred):
     Parameters
     ----------
     y_real : array-like
-
     y_pred : array-like
-
     Returns
     -------
-
     Positive floating point value: the best value is 0.0.
-
     return the mean absolute error
-
-
     """
     y_real, y_pred = check_arrays(y_real, y_pred)
-
     return np.sum(np.abs(y_pred - y_real)) / y_real.size
 
 
@@ -72,24 +63,16 @@ def normalized_mean_absolute_error(y_real, y_pred, max_rating, min_rating):
     ----------
     y_real : array-like
         The real ratings.
-
     y_pred : array-like
         The predicted ratings.
-
     max_rating:
         The maximum rating of the model.
-
     min_rating:
         The minimum rating of the model.
-
     Returns
     -------
-
     Positive floating point value: the best value is 0.0.
-
     return the normalized mean absolute error
-
-
     """
     y_real, y_pred = check_arrays(y_real, y_pred)
     mae = mean_absolute_error(y_real, y_pred)
@@ -105,34 +88,26 @@ def evaluation_error(y_real, y_pred, max_rating, min_rating):
     ----------
     y_real : array-like
         The real ratings.
-
     y_pred : array-like
         The predicted ratings.
-
     max_rating:
         The maximum rating of the model.
-
     min_rating:
         The minimum rating of the model.
-
     Returns
     -------
     mae: Positive floating point value: the best value is 0.0.
     nmae: Positive floating point value: the best value is 0.0.
     rmse: Positive floating point value: the best value is 0.0.
-
     """
     mae = mean_absolute_error(y_real, y_pred)
-    nmae = normalized_mean_absolute_error(y_real, y_pred,
-             max_rating, min_rating)
+    nmae = normalized_mean_absolute_error(y_real, y_pred, max_rating, min_rating)
     rmse = root_mean_square_error(y_real, y_pred)
-
     return mae, nmae, rmse
 
 
 def precision_score(y_real, y_pred):
     """Compute the precision
-
     The precision is the ratio :math:`tp / (tp + fp)` where tp is the
     number of true positives and fp the number of false positives.
     In recommendation systems the precision is the proportion of
@@ -144,44 +119,37 @@ def precision_score(y_real, y_pred):
     ----------
     y_real : array, shape = [n_samples]
         true targets
-
     y_pred : array, shape = [n_samples]
         predicted targets
-
     Returns
     -------
     precision : float
-
     """
-    p, _, _ = precision_recall_fscore(y_real, y_pred)
-    return np.average(p)
+    precision, _, _ = precision_recall_fscore(y_real, y_pred)
+    return np.average(precision)
 
 
 def recall_score(y_real, y_pred):
     """Compute the recall
-
     The recall is the ratio :math:`tp / (tp + fn)` where tp is the number of
     true positives and fn the number of false negatives.
     In recommendation systems the recall  is the proportion of good
     recommendations that appear in top recommendations.
-
     The best value is 1 and the worst value is 0.
 
     Parameters
     ----------
     y_real : array, shape = [n_samples]
         true targets
-
     y_pred : array, shape = [n_samples]
         predicted targets
-
     Returns
     -------
     recall : float
         ...
     """
-    _, r, _ = precision_recall_fscore(y_real, y_pred)
-    return np.average(r)
+    _, recall, _ = precision_recall_fscore(y_real, y_pred)
+    return np.average(recall)
 
 
 def f1_score(y_real, y_pred):
@@ -200,24 +168,19 @@ def f1_score(y_real, y_pred):
     obtained combining both the precision and recall measures and
     indicates an overall utility of the recommendation list.
 
-
     Parameters
     ----------
     y_real : array, shape = [n_samples]
         true targets
-
     y_pred : array, shape = [n_samples]
         predicted targets
-
     Returns
     -------
     f1_score : float
         f1_score of ...
-
     References
     ----------
     http://en.wikipedia.org/wiki/F1_score
-
     """
     return fbeta_score(y_real, y_pred, 1)
 
@@ -232,10 +195,8 @@ def fbeta_score(y_real, y_pred, beta):
     ----------
     y_real : array, shape = [n_samples]
         true targets
-
     y_pred : array, shape = [n_samples]
         predicted targets
-
     beta: float
         The beta parameter determines the weight of precision in the combined
         score. beta < 1 lends more weight to precision, while beta > 1 favors
@@ -246,18 +207,14 @@ def fbeta_score(y_real, y_pred, beta):
     -------
     fbeta_score : float
         fbeta_score of ...
-
     See also
     --------
     R. Baeza-Yates and B. Ribeiro-Neto (2011). Modern Information Retrieval.
     Addison Wesley, pp. 327-328.
-
     http://en.wikipedia.org/wiki/F1_score
-
     """
-    _, _, f = precision_recall_fscore(y_real, y_pred, beta=beta)
-
-    return np.average(f)
+    _, _, fscore = precision_recall_fscore(y_real, y_pred, beta=beta)
+    return np.average(fscore)
 
 
 def precision_recall_fscore(y_real, y_pred, beta=1.0):
@@ -284,18 +241,15 @@ def precision_recall_fscore(y_real, y_pred, beta=1.0):
     ----------
     y_real : array, shape = [n_samples]
         true recommended items
-
     y_pred : array, shape = [n_samples]
         predicted recommended items
-
     beta : float, 1.0 by default
         the strength of recall versus precision in the f-score
-
     Returns
     -------
-    precision: array, shape = [n_unique_labels], dtype = np.double
-    recall: array, shape = [n_unique_labels], dtype = np.double
-    f1_score: array, shape = [n_unique_labels], dtype = np.double
+    precision: array, shape = [n_unique_labels], dtype = np.float64
+    recall: array, shape = [n_unique_labels], dtype = np.float64
+    f1_score: array, shape = [n_unique_labels], dtype = np.float64
 
     References
     ----------
@@ -303,12 +257,13 @@ def precision_recall_fscore(y_real, y_pred, beta=1.0):
 
     """
     y_real, y_pred = check_arrays(y_real, y_pred)
-    assert(beta > 0)
+    assert beta > 0
 
     n_users = y_real.shape[0]
-    precision = np.zeros(n_users, dtype=np.double)
-    recall = np.zeros(n_users, dtype=np.double)
-    fscore = np.zeros(n_users, dtype=np.double)
+    # np.float64, 原为：np.double
+    precision = np.zeros(n_users, dtype=np.float_)
+    recall = np.zeros(n_users, dtype=np.float_)
+    fscore = np.zeros(n_users, dtype=np.float_)
 
     try:
         # oddly, we may get an "invalid" rather than a "divide" error here
@@ -316,21 +271,18 @@ def precision_recall_fscore(y_real, y_pred, beta=1.0):
 
         for i, y_items_pred in enumerate(y_pred):
             intersection_size = np.intersect1d(y_items_pred, y_real[i]).size
-            precision[i] = (intersection_size / float(len(y_real[i]))) \
-                                    if len(y_real[i])  else 0.0
-            recall[i] = (intersection_size / float(len(y_items_pred))) \
-                                    if len(y_items_pred) else 0.0
+            precision[i] = (intersection_size / float(len(y_real[i]))) if len(y_real[i])  else 0.0
+            recall[i] = (intersection_size / float(len(y_items_pred))) if len(y_items_pred) else 0.0
 
         # handle division by 0.0 in precision and recall
         precision[np.isnan(precision)] = 0.0
         recall[np.isnan(precision)] = 0.0
 
-        #fbeta Score
+        # fbeta Score
         beta2 = beta ** 2
-        fscore = (1 + beta2) * (precision * recall) \
-                    / (beta2 * precision + recall)
+        fscore = (1 + beta2) * (precision * recall) / (beta2 * precision + recall)
 
-        #handle division by 0.0 in fscore
+        # handle division by 0.0 in fscore
         fscore[(precision + recall) == 0.0] = 0.0
 
     finally:
@@ -346,21 +298,16 @@ def evaluation_report(y_real, y_pred, labels=None, target_names=None):
     ----------
     y_real : array, shape = [n_samples]
         true targets
-
     y_pred : array, shape = [n_samples]
         estimated targets
-
     labels : array, shape = [n_labels]
         optional list of label indices to include in the report
-
     target_names : list of strings
         optional display names matching the labels (same order)
-
     Returns
     -------
     report : string
         Text summary of the precision, recall, f1-score.
-
     """
 
     if labels is None:
@@ -386,20 +333,19 @@ def evaluation_report(y_real, y_pred, labels=None, target_names=None):
     headers = [""] + headers
     report = fmt % tuple(headers)
     report += '\n'
-    p, r, f1 = precision_recall_fscore(y_real, y_pred)
-    for i, label in enumerate(labels):
+    precision, recall, f1score = precision_recall_fscore(y_real, y_pred)
+    # for i, label in enumerate(labels):
+    for i, _ in enumerate(labels):
         values = [target_names[i]]
-        for v in (p[i], r[i], f1[i]):
-            values += ["%0.2f" % float(v)]
+        for val in (precision[i], recall[i], f1score[i]):
+            values += ["%0.2f" % float(val)]
         report += fmt % tuple(values)
 
     report += '\n'
 
     # compute averages
     values = [last_line_heading]
-    for v in (np.average(p),
-              np.average(r),
-              np.average(f1)):
-        values += ["%0.2f" % float(v)]
+    for val in (np.average(precision), np.average(recall), np.average(f1score)):
+        values += ["%0.2f" % float(val)]
     report += fmt % tuple(values)
     return report

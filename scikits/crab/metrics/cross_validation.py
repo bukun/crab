@@ -51,6 +51,7 @@ class LeaveOneOut(object):
     ['userA' 'userB'] ['userC']
 
     """
+
     def __init__(self, n, indices=False):
         self.n = n
         self.indices = indices
@@ -119,6 +120,7 @@ class LeavePOut(object):
     TRAIN: [ True False False] TEST: [False  True  True]
 
     """
+
     def __init__(self, n, p, indices=False):
         self.n = n
         self.p = p
@@ -194,6 +196,7 @@ class KFold(object):
     complementary.
 
     """
+
     def __init__(self, n, k, indices=False):
         assert k > 0, ValueError('Cannot have number of folds k below 1.')
         assert k <= n, ValueError('Cannot have number of folds k=%d, '
@@ -222,12 +225,7 @@ class KFold(object):
             yield train_index, test_index
 
     def __repr__(self):
-        return '%s.%s(n=%i, k=%i)' % (
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.n,
-            self.k,
-        )
+        return '%s.%s(n=%i, k=%i)' % (self.__class__.__module__, self.__class__.__name__, self.n, self.k,)
 
     def __len__(self):
         return self.k
@@ -279,8 +277,9 @@ class ShuffleSplit(object):
     TRAIN: [ True  True  True False] TEST: [False False False  True]
     TRAIN: [ True False  True  True] TEST: [False  True False False]
     """
+
     def __init__(self, n, n_iterations=10, test_fraction=0.1,
-                indices=False, random_state=None):
+                 indices=False, random_state=None):
         self.n = n
         self.n_iterations = n_iterations
         self.test_fraction = test_fraction
@@ -291,7 +290,7 @@ class ShuffleSplit(object):
         rng = self.random_state = check_random_state(self.random_state)
         n_test = ceil(self.test_fraction * self.n)
         for i in range(self.n_iterations):
-            #random partition
+            # random partition
             permutation = rng.permutation(self.n)
             ind_train = permutation[:-n_test]
             ind_test = permutation[-n_test:]

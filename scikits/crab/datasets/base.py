@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 """
 Base IO code for all datasets
+加载数据，将所有的原始数据，
+转换成使用以1开始的整数表示的索引
 """
 
 # Authors: Marcel Caraciolo <marcel@muricoca.com>
@@ -79,15 +82,14 @@ def load_movielens_r100k(load_timestamp=False):
                              # delimiter='|', usecols=(0, 1), dtype=str)
                              delimiter='|', usecols=(0, 1), dtype=[('f0', int), ('f1', '|S18')])
 
-    data_t = []
-    for item_id, label in data_titles:
-        data_t.append((item_id, label))
-    data_titles = dict(data_t)
+    data_titles = {item_id: label for (item_id, label) in data_titles}
 
     fdescr = open(dirname(__file__) + '/descr/movielens100k.rst')
 
-    return Bunch(data=data_movies, item_ids=data_titles,
-                 user_ids=None, DESCR=fdescr.read())
+    return Bunch(data=data_movies,
+                 item_ids=data_titles,
+                 user_ids=None,
+                 DESCR=fdescr.read())
 
 
 def load_sample_songs():
@@ -144,20 +146,13 @@ def load_sample_songs():
         # data_songs[u_ix][i_ix] = float(rating)
         data_songs[u_ix][i_ix] = rating
 
-    data_t = []
-    for no, item_id in enumerate(item_ids):
-        data_t.append((no + 1, item_id))
-    data_titles = dict(data_t)
-
-    data_u = []
-    for no, user_id in enumerate(user_ids):
-        data_u.append((no + 1, user_id))
-    data_users = dict(data_u)
 
     fdescr = open(dirname(__file__) + '/descr/sample_songs.rst')
 
-    return Bunch(data=data_songs, item_ids=data_titles,
-                 user_ids=data_users, DESCR=fdescr.read())
+    return Bunch(data=data_songs,
+                 item_ids={no + 1: item_id for no, item_id in enumerate(item_ids)},
+                 user_ids={no + 1: user_id for no, user_id in enumerate(user_ids)},
+                 DESCR=fdescr.read())
 
 
 def load_sample_movies():
@@ -202,32 +197,25 @@ def load_sample_movies():
     user_ids = []
     data_songs = {}
     for user_id, item_id, rating in data_m:
-        print(user_id, item_id, rating)
-        print(user_id)
-        # print(item_id)
-        # print(rating)
-        # print(rating.decode('UTF-8'))
         if user_id not in user_ids:
             user_ids.append(user_id)
         if item_id not in item_ids:
             item_ids.append(item_id)
         u_ix = user_ids.index(user_id) + 1
         i_ix = item_ids.index(item_id) + 1
+        # Python 字典(Dictionary) setdefault() 函数和get()方法类似, 如果键不已经存在于字典中，将会添加键并将值设为默认值。
+        # Python 字典(Dictionary) get() 函数返回指定键的值，如果值不在字典中返回默认值。
         data_songs.setdefault(u_ix, {})
         # data_songs[u_ix][i_ix] = float(rating.astype(np.str))
         data_songs[u_ix][i_ix] = rating
 
-    data_t = []
-    for no, item_id in enumerate(item_ids):
-        data_t.append((no + 1, item_id))
-    data_titles = dict(data_t)
-
-    data_u = []
-    for no, user_id in enumerate(user_ids):
-        data_u.append((no + 1, user_id))
-    data_users = dict(data_u)
 
     fdescr = open(dirname(__file__) + '/descr/sample_movies.rst')
 
-    return Bunch(data=data_songs, item_ids=data_titles,
-                 user_ids=data_users, DESCR=fdescr.read())
+    return Bunch(data=data_songs,
+                 item_ids={ no +1: item_id for no, item_id in enumerate(item_ids)},
+                 user_ids={ no + 1: user_id for no, user_id in enumerate(user_ids)},
+                 DESCR=fdescr.read())
+
+if __name__ == '__main__':
+    load_movielens_r100k()
