@@ -5,6 +5,17 @@
   to provide a rich set of components from which you can construct a customized recommender system from a 
   set of algorithms.
 
+## Update
+
+  The codes have been update to develop and run under Python 3.4+, and won't be tested under Python 2.x.
+  If you would like to run with Python 2.x, you could view [Crab Old Version](https://github.com/muricoca/crab).
+
+## Requirement
+
+    pip install numpy
+    pip install scipy
+    pip install scikit-learn
+
 ## Usage
 
   For Usage and Instructions checkout the [Crab Wiki](https://github.com/muricoca/crab/wiki)
